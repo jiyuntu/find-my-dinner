@@ -6,6 +6,7 @@ from telegram import (
 from telegram.constants import ParseMode
 from telegram.ext import (
     CallbackContext,
+    ContextTypes,
 )
 
 questions = ["請選一個顏色", "當收到禮物時，你的反應是？"]
@@ -16,7 +17,7 @@ options = [
 current_num_questions = {}
 MAX_QUESTIONS = 5
 
-async def poll(update: Update, context: CallbackContext.DEFAULT_TYPE, chat_id=None) -> None:
+async def poll(update: Update, context: ContextTypes.DEFAULT_TYPE, chat_id=None) -> None:
     """Sends a predefined poll"""
     question_id = random.randint(0, len(questions) - 1)
     option = options[question_id]
@@ -42,7 +43,7 @@ async def poll(update: Update, context: CallbackContext.DEFAULT_TYPE, chat_id=No
     context.bot_data.update(payload)
 
 
-async def receive_poll_answer(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
+async def receive_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Summarize a users poll vote"""
     answer = update.poll_answer
     answered_poll = context.bot_data[answer.poll_id]

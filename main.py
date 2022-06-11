@@ -22,6 +22,7 @@ from telegram.ext import (
     Application,
     CallbackContext,
     CommandHandler,
+    ContextTypes,
     MessageHandler,
     PollAnswerHandler,
     PollHandler,
@@ -35,11 +36,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Inform user about what this bot can do"""
     await update.message.reply_text("Please select /poll to get a Poll")
 
-async def help_handler(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
+async def help_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Display a help message"""
     await update.message.reply_text("Use /poll to test this bot.")
 
