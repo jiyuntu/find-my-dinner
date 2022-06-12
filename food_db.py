@@ -1,3 +1,5 @@
+import random
+
 foods = [
     ["刈包", "臭豆腐", "雞肉飯", "涼麵", "鴨肉羹", "鱔魚意麵", "肉圓", "蚵仔煎", "羊肉爐", "米粉"],
     ["蛋包飯", "咖哩", "炸豬排", "拉麵", "天婦羅", "牛丼", "壽司", "烏龍麵", "關東煮", "壽喜燒"],
@@ -10,10 +12,28 @@ foods = [
 # hot and sunny: 2
 # cold and rainy: 1
 # cold and sunny: 0
-weather = [
+food_weather = [
     [2, 2, 3, 3, 0, 1, 2, 2, 1, 3],
     [2, 3, 2, 1, 2, 2, 2, 1, 0, 0],
     [3, 2, 0, 1, 2, 2, 2, 2, 1, 1],
     [2, 1, 3, 2, 2, 2, 3, 0, 3, 2],
     [1, 2, 1, 2, 2, 1, 2, 1, 2, 1]
 ]
+
+food_types = [ "台灣小吃", "日式料理", "西式料理", "健康餐", "素食" ]
+
+def get_weather_type(t, h):
+    if t > 22:
+        return 3 if h>=50 else 2
+    else:
+        return 1 if h>=50 else 0
+
+def get_food_recommendation(p:int, t:int, h:int)->str:
+    weather_type = get_weather_type(t, h)
+    food_list = []
+    for i in range(10):
+        if food_weather[p][i]==weather_type:
+            food_list.append(foods[p][i])
+    if food_list:
+        return random.choice(food_list)
+    return random.choice(foods[p])

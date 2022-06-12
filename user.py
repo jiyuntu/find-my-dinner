@@ -47,12 +47,13 @@ class User():
         self.personality_str = User.personality_descriptions[self.personality]
         return self.personality
 
-    def update_horoscope(self, ans_str:str, opt_id:int)->str:
+    def update_horoscope(self, ans_str:str, opt_id:int)->int:
         if ans_str=="以上皆非":
             self.horoscope = -2
         elif self.horoscope == -2:
             self.horoscope = opt_id + 6
+            self.horoscope_str = User.horoscope_list[self.horoscope]
         else:
             self.horoscope = opt_id
-        self.horoscope_str = ans_str
-        return self.horoscope_str
+            self.horoscope_str = User.horoscope_list[self.horoscope]
+        return self.horoscope
