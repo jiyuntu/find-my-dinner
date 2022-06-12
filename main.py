@@ -8,6 +8,7 @@ poll/quiz the bot generates. The preview command generates a closed poll/quiz, e
 one the user sends the bot
 """
 import logging
+import configparser
 
 from telegram import (
     KeyboardButton,
@@ -29,6 +30,11 @@ from telegram.ext import (
     filters,
 )
 from personality_test import poll, receive_poll_answer
+from food_search import findfood_handler
+
+# Load data from config.ini file
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 # Enable logging
 logging.basicConfig(
@@ -47,11 +53,12 @@ async def help_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 def main() -> None:
     """Run bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token("TOKEN").build()
+    application = Application.builder().token(config['TELEGRAM']['ACCESS_TOKEN']).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("poll", poll))
     application.add_handler(CommandHandler("help", help_handler))
     application.add_handler(PollAnswerHandler(receive_poll_answer))
+    application.add_handler(CommandHandler("findfood", findfood_handler))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
