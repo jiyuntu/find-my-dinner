@@ -49,7 +49,7 @@ async def findfood_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, c
     chat_id = update.effective_chat.id if update else chat_id
     
     if len(context.args) != 1:
-        await update.message.reply_text("Please pass ONE food keyword for /findfood command")
+        await update.message.reply_text("抱歉，請在 /findfood 後輸入欲查詢的美食名稱... <(_ _)>")
     else:
         gmaps = googlemaps.Client(key=config['GOOGLEMAP']['API_KEY'])
         usr_loc = geocoder.ip('me').latlng
@@ -65,11 +65,11 @@ async def findfood_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, c
                     restaurants.append(raw_restaurants[i])
             
         if len(restaurants) == 0:
-            await update.message.reply_text("Sorry, but no nearby restaurants found... orz")
+            await update.message.reply_text("抱歉，沒有查詢到符合的餐廳... orz")
             sticker_id = decide_sticker('failed')
             await context.bot.send_sticker(chat_id, sticker_id)
         else:
-            await update.message.reply_text("Congrats! Several restaurants found and at most three of them are listed below:")
+            await update.message.reply_text("查詢到了美味的食物！\n以下列出幾個附近的好評餐廳～")
             sticker_id = decide_sticker('success')
             await context.bot.send_sticker(chat_id, sticker_id)
             
@@ -81,8 +81,8 @@ async def findfood_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, c
                 address = res['vicinity']
                 name = res['name']
                 details = """<b>{}</b>
-    Rating on Google Map: {}
-    Address: {}""".format(name, rating, address)
+Google Map 評分：{}
+地址：{}""".format(name, rating, address)
                 
                 # thumbnail = res.get('photos')
                 # thumb_ref = thumbnail[0]['photo_reference']
@@ -91,7 +91,7 @@ async def findfood_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, c
                 
                 encoded_query = urllib.parse.quote_plus(name)
                 map_url = 'https://www.google.com/maps/search/?api=1&query={}'.format(encoded_query)
-                keyboard = [[InlineKeyboardButton("Check on Map", url=map_url)]]
+                keyboard = [[InlineKeyboardButton("查看地圖", url=map_url)]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await context.bot.send_message(chat_id, details, parse_mode=ParseMode.HTML, reply_markup=reply_markup)
