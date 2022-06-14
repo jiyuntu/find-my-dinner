@@ -13,9 +13,7 @@ import questions_db as qdb
 import food_db as fdb
 from user import User
 
-# current_num_questions = {}
 users = {}
-MAX_QUESTIONS = 5
 
 async def poll(update: Update, context: ContextTypes.DEFAULT_TYPE, chat_id=None) -> None:
     """Sends a predefined poll"""
@@ -101,7 +99,7 @@ async def receive_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE
         
     # show next poll (or stop)
     await context.bot.stop_poll(chat_id, message_id)
-    if users[chat_id].qcount < MAX_QUESTIONS:
+    if users[chat_id].qcount < qdb.qnum:
         await poll(None, context, chat_id)
     elif users[chat_id].personality < 0:
         # end personality test
