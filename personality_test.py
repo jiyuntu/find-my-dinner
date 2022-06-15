@@ -12,8 +12,10 @@ from telegram.ext import (
 import questions_db as qdb
 import food_db as fdb
 from user import User
+from weather import get_weather_data
 
 users = {}
+MAX_QUESTION_NUM = 3
 
 async def poll(update: Update, context: ContextTypes.DEFAULT_TYPE, chat_id=None) -> None:
     """Sends a predefined poll"""
@@ -99,7 +101,7 @@ async def receive_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE
         
     # show next poll (or stop)
     await context.bot.stop_poll(chat_id, message_id)
-    if users[chat_id].qcount < qdb.qnum:
+    if users[chat_id].qcount < MAX_QUESTION_NUM:
         await poll(None, context, chat_id)
     elif users[chat_id].personality < 0:
         # end personality test
@@ -127,17 +129,19 @@ async def make_recommendation(update: Update, context: ContextTypes.DEFAULT_TYPE
     horoscope = users[chat_id].horoscope_str
     luck_desc = "運氣不錯"
     luck_points = 4  # full points: 5
-    temperature = 26
-    humidity = 80
+    weather_dict = get_weather_data()
+    temperature = int(weather_dict['temp'])
+    humidity = int(weather_dict['precent'][:-1])
     food_str = fdb.get_food_recommendation(users[chat_id].personality, temperature, humidity)
     # show our recommendation
     await context.bot.send_message(
         chat_id,
-        f"{horoscope}的你，今天{luck_desc}，運氣分數為{luck_points}/5。\n今日氣溫{temperature}度C，濕度{humidity}%。\n根據今天的天氣和你的運氣，我推薦你吃{food_str}！", # maybe change to a better sentence
+        f"{horoscope}的你，今天{luck_desc}，運氣分數為{luck_points}/5。\n今日天氣為{weather_dict['weather']}，氣溫{temperature}度C，濕度{humidity}%。\n根據今天的天氣和你的運氣，我推薦你吃{food_str}！", # maybe change to a better sentence
         parse_mode=ParseMode.HTML,
     )
     await context.bot.send_message(
         chat_id,
-        f"用 /findfood 搜尋附近的{food_str}",
+        f"輸入 /findfood 搜尋附近的{food_str}",
         parse_mode=ParseMode.HTML,
     )
+    
