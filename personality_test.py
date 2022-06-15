@@ -13,6 +13,9 @@ import questions_db as qdb
 import food_db as fdb
 from user import User
 
+import requests
+from bs4 import BeautifulSoup
+
 # current_num_questions = {}
 users = {}
 MAX_QUESTIONS = 5
@@ -122,20 +125,39 @@ async def receive_poll_answer(update: Update, context: ContextTypes.DEFAULT_TYPE
         await make_recommendation(update, context, chat_id)
         del users[chat_id]
 
+async def horoscope_ref(zodiacString):
+    url = 'https://www.daily-zodiac.com/mobile/zodiac/' + qdb.zodiacSigns_convent[zodiacString]
+    response = requests.get(url)
+    response.encoding = 'UTF-8'
+
+    # 檢查 HTTP 回應碼是否為 200
+    if response.status_code == requests.codes.ok:
+        sp = BeautifulSoup(response.text, 'html.parser')
+        today_horoscope_weather = sp.select(".today .weather")[0].text #今日心情
+        
+        if today_horoscope_weather not in qdb.mood_weather:
+            today_horoscope_weather = "陰"
+        
+        mood_point = qdb.mood_weather[today_horoscope_weather]
+        today_horoscope = sp.select("section article")[0].text.lstrip().rstrip()
+
+        return mood_point, today_horoscope
+
+
+        
 async def make_recommendation(update: Update, context: ContextTypes.DEFAULT_TYPE, chat_id=None) -> None:
     # using the weather and horoscope,
     # determine the best food to recommend for the user's personality type
     food_str = "土" # to replace
     horoscope = users[chat_id].horoscope_str
-    luck_desc = "運氣不錯"
-    luck_points = 4  # full points: 5
+    mood_point, today_horoscope =  await horoscope_ref(horoscope) # full points: 5
     temperature = 26
     humidity = 80
     food_str = fdb.get_food_recommendation(users[chat_id].personality, temperature, humidity)
     # show our recommendation
     await context.bot.send_message(
         chat_id,
-        f"{horoscope}的你，今天{luck_desc}，運氣分數為{luck_points}/5。\n今日氣溫{temperature}度C，濕度{humidity}%。\n根據今天的天氣和你的運氣，我推薦你吃{food_str}！", # maybe change to a better sentence
+        f"{horoscope}的你，{today_horoscope}\n運氣分數為{mood_point}/5。\n今日氣溫{temperature}度C，濕度{humidity}%。\n根據今天的天氣和你的運氣，我推薦你吃{food_str}！", # maybe change to a better sentence
         parse_mode=ParseMode.HTML,
     )
     await context.bot.send_message(

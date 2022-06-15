@@ -63,3 +63,26 @@ horoscope_list2 =[
     "天蠍座",
     "射手座",
 ]
+
+zodiacSigns_convent = {
+    '牡羊座':'Aries',
+    '金牛座':'Taurus',
+    '雙子座':'Gemini',
+    '巨蟹座':'Cancer',
+    '獅子座':'Leo',
+    '處女座':'Virgo',
+    '天秤座':'Libra',
+    '天蠍座':'Scorpio',
+    '射手座':'Sagittarius',
+    '摩羯座':'Capricorn',
+    '水瓶座':'Aquarius',
+    '雙魚座':'Pisces'
+}
+
+mood_weather = {
+    '晴': 5,
+    '晴時多雲': 4,
+    '陰': 3,
+    '雨': 2,
+    '打雷閃電': 1
+}
