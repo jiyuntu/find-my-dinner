@@ -15,7 +15,7 @@ from user import User
 from weather import get_weather_data
 
 users = {}
-MAX_QUESTION_NUM = 3
+MAX_QUESTION_NUM = 5
 
 async def poll(update: Update, context: ContextTypes.DEFAULT_TYPE, chat_id=None) -> None:
     """Sends a predefined poll"""
