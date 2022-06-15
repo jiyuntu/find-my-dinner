@@ -44,11 +44,11 @@ logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Inform user about what this bot can do"""
-    await update.message.reply_text("Please select /poll to get a Poll")
+    await update.message.reply_text("輸入 /poll 來找晚餐吧！")
 
 async def help_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Display a help message"""
-    await update.message.reply_text("Use /poll to test this bot.")
+    await update.message.reply_text("輸入 /poll 就可以開始問答囉！") 
 
 def main() -> None:
     """Run bot."""

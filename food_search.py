@@ -59,7 +59,7 @@ async def findfood_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, c
         
         restaurants = []
         for i in range(len(raw_restaurants)):
-            if raw_restaurants[i].get('rating') == None or raw_restaurants[i].get('vicinity') == None or raw_restaurants[i].get('name') == None:
+            if raw_restaurants[i].get('rating') == None or raw_restaurants[i].get('vicinity') == None or raw_restaurants[i].get('name') == None or raw_restaurants[i].get('place_id') == None:
                 continue
             if raw_restaurants[i]['rating'] > 3.9:
                     restaurants.append(raw_restaurants[i])
@@ -80,6 +80,7 @@ async def findfood_handler(update: Update, context: ContextTypes.DEFAULT_TYPE, c
                 rating = res['rating']
                 address = res['vicinity']
                 name = res['name']
+                place_id = res['place_id']
                 details = """<b>{}</b>
 Google Map 評分：{}
 地址：{}""".format(name, rating, address)
@@ -90,7 +91,7 @@ Google Map 評分：{}
                 # thumb_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth={}&photo_reference={}&key={}'.format(thumb_wid, thumb_ref, config['GOOGLEMAP']['API_KEY'])
                 
                 encoded_query = urllib.parse.quote_plus(name)
-                map_url = 'https://www.google.com/maps/search/?api=1&query={}'.format(encoded_query)
+                map_url = 'https://www.google.com/maps/search/?api=1&query={}&query_place_id={}'.format(encoded_query, place_id)
                 keyboard = [[InlineKeyboardButton("查看地圖", url=map_url)]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
